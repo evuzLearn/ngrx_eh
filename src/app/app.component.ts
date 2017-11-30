@@ -9,7 +9,7 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mapTo';
 
-import { HOUR, SECOND } from '../reducers';
+import { HOUR, SECOND, ADVANCE } from '../reducers';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ import { HOUR, SECOND } from '../reducers';
     <button (click)="click$.next(inputNum.value)">Update</button>
     <app-clock [time]="time | async"></app-clock>
 
-    <div *ngFor="let person of people | async ">
+    <div (click)="person$.next(person)" *ngFor="let person of people | async ">
       {{ person.name }} is in {{ person.time | date:'hh:mm:ss' }}
     </div>
   `,
@@ -31,12 +31,16 @@ export class AppComponent {
   });
   public time: any;
   public people: any;
+  public person$ = new Subject().map(value => ({
+    payload: value,
+    type: ADVANCE,
+  }));
 
   constructor(store: Store<any>) {
     this.time = store.select('clock');
     this.people = store.select('people');
 
-    Observable.merge(this.click$, this.second$).subscribe(
+    Observable.merge(this.click$, this.second$, this.person$).subscribe(
       store.dispatch.bind(store),
     );
   }
