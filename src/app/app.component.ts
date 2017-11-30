@@ -6,6 +6,7 @@ import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mapTo';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +20,19 @@ export class AppComponent {
   clock;
 
   constructor() {
-    this.clock = Observable.merge(this.click$, Observable.interval(1000))
-      .startWith(new Date())
+    this.clock = Observable.merge(
+      this.click$.mapTo('hour'),
+      Observable.interval(1000).mapTo('second'),
+    )
+      .startWith<Date | string>(new Date())
       .scan((acc: Date, curr) => {
         const date = new Date(acc.getTime());
-        date.setSeconds(date.getSeconds() + 1);
+        if (curr === 'second') {
+          date.setSeconds(date.getSeconds() + 1);
+        }
+        if (curr === 'hour') {
+          date.setHours(date.getHours() + 1);
+        }
         return date;
       });
   }
