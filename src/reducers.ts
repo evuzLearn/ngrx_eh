@@ -14,3 +14,16 @@ export const clock = (state = new Date(), { type, payload }) => {
       return state;
   }
 };
+
+const defaultPeople = [
+  { name: 'Sara', time: '' },
+  { name: 'John', time: '' },
+  { name: 'Nancy', time: '' },
+  { name: 'Drew', time: '' },
+];
+export const people = (state = defaultPeople, { type, payload }) => {
+  switch (type) {
+    default:
+      return state;
+  }
+};
