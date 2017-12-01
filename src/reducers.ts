@@ -1,6 +1,7 @@
 export const HOUR = 'HOUR';
 export const SECOND = 'SECOND';
 export const ADVANCE = 'ADVANCE';
+export const RECALL = 'RECALL';
 
 const defaultClockAction = {
   type: '',
@@ -40,6 +41,13 @@ export const people = (state = defaultPeople, { type, payload }) => {
           };
         }
         return person;
+      });
+    case RECALL:
+      return state.map(person => {
+        return {
+          name: person.name,
+          time: payload,
+        };
       });
     default:
       return state;
